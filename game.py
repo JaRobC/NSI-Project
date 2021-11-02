@@ -11,7 +11,7 @@ class Game:
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
-        pygame.display.set_caption("Titre du jeu")
+        pygame.display.set_caption("Island of Kingdoms")
 
         tmx_data = pytmx.util_pygame.load_pygame('carte.tmx')
         map_data = pyscroll.data.TiledMapData(tmx_data)

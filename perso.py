@@ -5,7 +5,7 @@ class Player(pygame.sprite.Sprite):
 
     def __init__(self, x, y):
         super().__init__()
-        self.sprite_sheet = pygame.image.load('perso.png')
+        self.sprite_sheet = pygame.image.load('./characters_model/perso.png')
         self.image = self.get_img(34, 0)
         self.image.set_colorkey([255, 255, 255])
         self.rect = self.image.get_rect()
@@ -27,7 +27,7 @@ class Player(pygame.sprite.Sprite):
             'haut2' : self.get_img(32, 96), 
             'haut3' : self.get_img(64, 96),
         }
-        self.speed = 8
+        self.speed = 12
 
     def animations(self, anim_name):
         self.image = self.images_pos[anim_name]
