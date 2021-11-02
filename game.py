@@ -11,7 +11,7 @@ class Game:
 
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
-        pygame.display.set_caption("Island of Kingdoms")
+        pygame.display.set_caption("Titre du jeu")
 
         tmx_data = pytmx.util_pygame.load_pygame('carte.tmx')
         map_data = pyscroll.data.TiledMapData(tmx_data)
@@ -28,6 +28,19 @@ class Game:
         self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=3)
         
         self.group.add(self.player)
+
+        self.walls = []
+
+        for obj in tmx_data.objects:
+            if obj.type == "collision" or obj.type == "collision_eau":
+                self.walls.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+
+    def update(self):
+        self.group.update()
+
+        for sprite in self.group.sprites():
+            if sprite.feet.collidelist(self.walls) > -1:
+                sprite.move_back()
 
     def screen_update(self):
         self.group.update()
@@ -68,8 +81,9 @@ class Game:
         tourne = True
 
         while tourne:
-            
+            self.player.save_location()
             self.handle_input()
+            self.update()
             self.screen_update()
 
             for event in pygame.event.get():
@@ -79,6 +93,3 @@ class Game:
             clock.tick(60)
 
         pygame.quit()
-
-game = Game()
-game.run()
