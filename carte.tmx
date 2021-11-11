@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="200">
- <tileset firstgid="1" source="../../../Dropbox/Ordi Maman/code/projet 1/nature.tsx"/>
+ <tileset firstgid="1" source="nature.tsx"/>
  <layer id="1" name="background" width="50" height="50">
   <data encoding="csv">
 202,162,161,162,202,162,161,161,161,201,162,201,162,201,162,161,161,201,201,201,162,202,202,162,162,201,162,161,162,202,161,161,162,202,161,202,162,162,162,201,201,202,202,162,202,162,162,201,161,202,
