@@ -76,6 +76,7 @@ class Game: #On crée la classe pour le jeu
                     self.nom_bois += 1
                     print("bois = ",self.nom_bois)
                 if self.suite_bois >= 20:
+                    print("Vous avez atteint votre limite de récolte de bois")
                     self.stop_bois = True
                 sleep(0.1)
 
@@ -87,6 +88,7 @@ class Game: #On crée la classe pour le jeu
                     self.nom_pierre += 1
                     print("pierre = ",self.nom_pierre)
                 if self.suite_pierre >= 20:
+                    print("Vous avez atteint votre limite de récolte de pierres")
                     self.stop_pierre = True
                 sleep(0.1)
 
