@@ -7,24 +7,30 @@ import random
 
 from perso import Player
 
-class Game:
+class Game: #On crée la classe pour le jeu
 
-    def __init__(self):
+    def __init__(self): #On définit la fonction qui s'éxécutera au lancement du jeu
+        #On crée la fenètre
         self.screen = pygame.display.set_mode((1280, 720))
         pygame.display.set_caption("Titre du jeu")
 
+        #On charge la carte 
         tmx_data = pytmx.util_pygame.load_pygame('carte.tmx')
         map_data = pyscroll.data.TiledMapData(tmx_data)
         map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
         map_layer.zoom = 3
-
+        
+        #On définit les points de sapwn du joueur
         spawn = ('player1_spawn', 'player2_spawn', 'player3_spawn')
 
+        #On récupère la position du joueur initiale grâce aux point de spawn
         player_pos = tmx_data.get_object_by_name(spawn[random.randint(0, 2)])
         self.player = Player(player_pos.x, player_pos.y)
-
+        
+        #On définit le temps d'attente entre les frame
         self.ims = 0.09
-
+        
+        #On crée le groupe rassemblant les différents layer de la map
         self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=5)
         
         self.group.add(self.player)
