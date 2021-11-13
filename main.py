@@ -83,8 +83,6 @@ def main_menu():
         pygame.display.update()
         mainClock.tick(60)
 
-        
-
 def game():
     from game import Game
     pygame.init
@@ -136,8 +134,6 @@ def options():
         
         pygame.display.update()
         mainClock.tick(60)
-
-
 
 def exit():
     running = True
