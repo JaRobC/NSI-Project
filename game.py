@@ -4,8 +4,9 @@ from pyscroll import data   # On importe les bibliothèques / librairies
 import pytmx                #
 import pyscroll             #
 import random               #
-
-from perso import Player
+import sys                  #
+from pygame.locals import * #
+from perso import Player    #
 
 class Shop: #On créer la classe de la map Shop
 
@@ -113,7 +114,10 @@ class Shop: #On créer la classe de la map Shop
 
             for event in pygame.event.get(): 
                 if event.type == pygame.QUIT: #On lance la condition si le joueur appuye sur la croix
-                    tourne = False #Cela ferme la fenêtre
+                    tourne = False                          #Cela ferme la fenêtre
+                if event.type == KEYDOWN:                  #
+                    if event.key == K_ESCAPE:              #
+                        sys.exit()                         #
 
             clock.tick(60) #On définit les ticks de notre jeu (le temps pour éviter que cela soit trop rapide)
 
@@ -291,6 +295,9 @@ class Game: #On crée la classe pour le jeu
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: #On lance la condition si le joueur appuye sur la croix
                     tourne = False #Cela ferme la fenêtre
+                if event.type == KEYDOWN:                  #
+                    if event.key == K_ESCAPE:              #
+                        sys.exit()
 
             clock.tick(60) #On définit les ticks de notre jeu (le temps pour éviter que cela soit trop rapide)
 
