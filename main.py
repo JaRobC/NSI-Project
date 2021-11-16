@@ -33,7 +33,7 @@ def draw_text(text, font, color, suface, x, y):                 #
     textrect.topleft = (x, y)                                   #
     screen.blit(textobj, textrect)                              #
 
-def numbers_draw(variable, color,font, surface, x, y):          #
+def draw_numbers(variable, color,font, surface, x, y):          #
     variableobj = font.render(str(variable), 1, color)          #
     variablerect = variableobj.get_rect()                       #   Création de la fonction pour pouvoir afficher des nombres sur le Menu.
     variablerect.topleft = (x, y)                               #
@@ -178,7 +178,7 @@ def options():
         pygame.draw.rect(screen, (255, 255, 255), button_soundpoz)                      #
         draw_text("+", font2, (0, 0, 0), button_soundpoz, 230, 213)                     #
         draw_text("Volume: ", font2, (0, 0, 0), screen, 92, 215)                        # [-]
-        numbers_draw( int(lvl_sound * 100), (0, 0, 0), font2, screen, 175, 215)         #
+        draw_numbers( int(lvl_sound * 100), (0, 0, 0), font2, screen, 175, 215)         #
         if flag == False:                                                               #
             draw_text('Pause Sound', font2, (0, 0, 0), button_sound, 86, 115)           #
         elif flag == True:                                                              #
