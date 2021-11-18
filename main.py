@@ -85,7 +85,7 @@ class Main:
             pygame.draw.rect(self.screen, (250, 250, 250), button_opt)                   # Ici c'est partie des dessins de chaqu'un des bttons et du text.
             self.draw_text('OPTIONS', self.font_button, (0, 0, 0), button_opt, 78, 215)       # [-]
             pygame.draw.rect(self.screen, (255, 0, 0), button_ext)                       #
-            self.draw_text('EXIT', self.font_button, (225, 255, 255), button_ext, 105, 315)   #
+            self.draw_text('EXIT GAME', self.font_button, (225, 255, 255), button_ext, 105, 315)   #
             
             # La variable clique est reset sur false.
             click = False

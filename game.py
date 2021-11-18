@@ -36,7 +36,7 @@ class Game: #On crée la classe pour le jeu
         self.player = Player(self.player_pos.x, self.player_pos.y)
         
         #On définit le temps d'attente entre les frame
-        self.ims = 0.09
+        self.ims = 0.005
         
         #On crée le groupe rassemblant les différents layer de la map
         self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=7)
@@ -68,6 +68,7 @@ class Game: #On crée la classe pour le jeu
         self.enter_castle = False
 
         self.choice = False
+        
 
         #On créer les liste pour les collisions
         self.walls = []
@@ -383,6 +384,10 @@ class Game: #On crée la classe pour le jeu
                     self.suite_bois += 1
                     self.nom_bois += 1
                     print("bois = ",self.nom_bois)
+                    self.hud.textarbre = str(self.nom_bois)
+                    self.hud.textpierre = str(self.nom_pierre)
+                    self.hud.render(self.screen)
+                    pygame.display.flip()
                 if self.suite_bois >= 20: #On lance le "timer" pour éviter que la récolte soit infini
                     print("Vous avez atteint votre limite de récolte de bois")
                     self.stop_bois = True
@@ -394,6 +399,10 @@ class Game: #On crée la classe pour le jeu
                     self.suite_pierre += 1
                     self.nom_pierre += 1
                     print("pierre = ",self.nom_pierre)
+                    self.hud.textarbre = str(self.nom_bois)
+                    self.hud.textpierre = str(self.nom_pierre)
+                    self.hud.render(self.screen)
+                    pygame.display.flip()
                 if self.suite_pierre >= 20: #On lance le "timer" pour éviter que la récolte soit infini
                     print("Vous avez atteint votre limite de récolte de pierres")
                     self.stop_pierre = True
@@ -415,13 +424,17 @@ class Game: #On crée la classe pour le jeu
                         self.enter_castle = True
                         print("Vous avez accès au chateau")
                         self.nom_pierre = self.nom_pierre - 40
-                        self.nom_bois = self.nom_pierre - 40
+                        self.nom_bois = self.nom_bois - 40
                     else:
                         print("Vous ne pouvez pas avoir accès au château")
                         self.manque_pierre = 40 - self.nom_pierre
                         self.manque_bois = 40 - self.nom_bois
                         print("Il vous manque ", self.manque_bois, " de bois")
                         print("Il vous manque ", self.manque_pierre, " de pierre")
+                self.hud.textarbre = str(self.nom_bois)
+                self.hud.textpierre = str(self.nom_pierre)
+                self.hud.render(self.screen)
+                pygame.display.flip()
             
             elif sprite.feet.collidelist(self.castle_enter) > -1 and self.world == 'world': #On vérifie les collisions
                 if self.enter_castle == False:
@@ -433,6 +446,10 @@ class Game: #On crée la classe pour le jeu
                     print("Il vous manque ", self.manque_pierre, " de pierre")
                 elif self.enter_castle == True:
                     print("ok")
+                self.hud.textarbre = str(self.nom_bois)
+                self.hud.textpierre = str(self.nom_pierre)
+                self.hud.render(self.screen)
+                pygame.display.flip()
 
             if sprite.feet.collidelist(self.walls) > -1 and self.world == 'shop': #On vérifie les collisions
                 sprite.move_back() #On effectue ce qu'il faut pour lorsqu'il y a collisions
@@ -448,6 +465,15 @@ class Game: #On crée la classe pour le jeu
         self.group.update()
         self.group.center(self.player.rect.center)
         self.group.draw(self.screen)
+        self.hud.textarbre = str(self.nom_bois)
+        self.hud.textpierre = str(self.nom_pierre)
+        self.hud.render(self.screen)
+        if self.stop_bois == True:
+            self.stoparbre = self.font.render(self.hud.stoparbre, False, (255,0,0))
+            self.screen.blit(self.stoparbre, (200, 260))
+        elif self.stop_pierre == True:
+            self.stoppierre = self.font.render(self.hud.stoppierre, False, (255, 0, 0))
+            self.screen.blit(self.stoppierre, (200, 360))
         pygame.display.flip()
 
     def anim_compil(self, anim1, anim2, anim3): #On créer une fonction pour effectuer les différentes animations de marche
@@ -459,6 +485,16 @@ class Game: #On crée la classe pour le jeu
         sleep(self.ims)
         self.player.animations(anim3)
         self.screen_update() #On met à jour l'écran
+        self.hud.textarbre = str(self.nom_bois)
+        self.hud.textpierre = str(self.nom_pierre)
+        self.hud.render(self.screen)
+        if self.stop_bois == True:
+            self.stoparbre = self.font.render(self.hud.stoparbre, False, (255,0,0))
+            self.screen.blit(self.stoparbre, (200, 260))
+        elif self.stop_pierre == True:
+            self.stoppierre = self.font.render(self.hud.stoppierre, False, (255, 0, 0))
+            self.screen.blit(self.stoppierre, (200, 360))
+        pygame.display.flip()
 
     def handle_input(self): #On créer une fonction afin de déplacer le joueur avec les animations
 
@@ -489,20 +525,28 @@ class Game: #On crée la classe pour le jeu
             self.handle_input()         #   On effectue les différentes fonctions
             self.update()               #
             self.screen_update()        #
-            self.hud.text1 = str(self.nom_bois)
+            self.hud.textarbre = str(self.nom_bois)
+            self.hud.textpierre = str(self.nom_pierre)
             self.hud.render(self.screen)
             pygame.display.flip()
 
             if self.stop_bois == True: #On effectue le timer de la récolte des items
                 self.stop_stop_bois += 1
+                self.stoparbre = self.font.render(self.hud.stoparbre, False, (255,0,0))
+                self.screen.blit(self.stoparbre, (200, 260))
+                pygame.display.flip()
                 if self.stop_stop_bois >= 500:
                     print("Lest go arbre")
                     self.stop_stop_bois = 0
                     self.suite_bois = 0
                     self.stop_bois = False
+                    
 
             if self.stop_pierre == True:  #On effectue le timer de la récolte des items
                 self.stop_stop_pierre += 1
+                self.stoppierre = self.font.render(self.hud.stoppierre, False, (255, 0, 0))
+                self.screen.blit(self.stoppierre, (200, 360))
+                pygame.display.flip()
                 if self.stop_stop_pierre >= 500:
                     print("Lest go pierre")
                     self.stop_stop_pierre = 0
