@@ -22,7 +22,7 @@ class Main:
         self.click = False                                                   #
         self.flag = False    
         self.isPlay = False                                                #
-        self.lvl_sound = 0.5                                    #
+        self.lvl_sound = 0.2                                    #
 
     def play(self):
         pygame.mixer.music.load("./menu/sound/sound1.mp3")          #
@@ -47,27 +47,31 @@ class Main:
         self.screen.blit(self.variableobj, self.variablerect)                      #
 
     # Creation de la feneître principal du Menu.
-    def main_menu(self):                                                                
+    def main_menu(self):       
+                                                                 
         running = True                                                              
         click = False
         if self.isPlay == False:     
-            #self.play()
+            self.play()
             self.isPlay = True
+
         while running:   
+            
+            self.soundlvl()
 
             # La base de l'écran va être posé ici même, le fond d'écran mais aussi "l'entête" de l'onglet.                                                           
             self.screen.fill((202, 228, 241))                                            
             self.screen.blit(self.background1, (0, 0))                                        
-            self.draw_text('Island of Kingdoms', self.font, (255,215,0), self.screen, 50, 40)      
-            self.draw_text('Alpha 4.c', self.font2, (255, 255, 255), self.screen, 400, 450)        
+            self.draw_text('Island of Kingdoms', self.font, (255,215,0), self.screen, 420, 40)      
+            self.draw_text('Alpha 6.d', self.font2, (255, 255, 255), self.screen, 1120, 660)        
             
             # Creation de deux variables (mx et my) qui vont avoir la valeur du curseur de la souris. [**]
             mx , my = pygame.mouse.get_pos()  
 
             # Creation des variable button qui vont pemettre un echange de entre "page"/onglet de menu.
-            button_str = pygame.Rect(50, 100, 200, 50)                  
-            button_opt = pygame.Rect(50, 200, 200, 50)
-            button_ext = pygame.Rect(50, 300, 200, 50)
+            button_str = pygame.Rect(540, 235, 200, 50)                  
+            button_opt = pygame.Rect(540, 335, 200, 50)
+            button_ext = pygame.Rect(540, 435, 200, 50)
             
             # Déclaration des condition de ce qu'il va se passer pour chaque boutton si il est cliquer en faisant appelle à une autre fonction.
             if button_str.collidepoint((mx, my)):
@@ -81,11 +85,11 @@ class Main:
                     sys.exit()
 
             pygame.draw.rect(self.screen, (0, 255, 0), button_str)                       #
-            self.draw_text('START', self.font_button, (255, 255, 255), button_str, 92, 115)   #
+            self.draw_text('COMMENCER', self.font_button, (255, 255, 255), button_str, 545, 240)   #
             pygame.draw.rect(self.screen, (250, 250, 250), button_opt)                   # Ici c'est partie des dessins de chaqu'un des bttons et du text.
-            self.draw_text('OPTIONS', self.font_button, (0, 0, 0), button_opt, 78, 215)       # [-]
+            self.draw_text('OPTIONS', self.font_button, (0, 0, 0), button_opt, 570, 340)       # [-]
             pygame.draw.rect(self.screen, (255, 0, 0), button_ext)                       #
-            self.draw_text('EXIT GAME', self.font_button, (225, 255, 255), button_ext, 105, 315)   #
+            self.draw_text('QUITTER', self.font_button, (225, 255, 255), button_ext, 570, 440)   #
             
             # La variable clique est reset sur false.
             click = False
@@ -135,14 +139,14 @@ class Main:
         while running:
             self.screen.fill((202, 228, 241))                                        #
             self.screen.blit(self.background2, (0, 0))                                    # Set de base pour la fenaître des options.
-            self.draw_text('Options', self.font, (255, 255, 255), self.screen, 20, 20)         #
+            self.draw_text('Options', self.font, (255, 255, 255), self.screen, 551, 40)         #
 
             # Set du son ( voir le def soundlvl() plus haut).
             self.soundlvl()
 
-            button_sound = pygame.Rect(50, 100, 200, 50)            #
-            button_soundneg = pygame.Rect(38, 200, 50, 50)          # Création de chaque button utile aux options.
-            button_soundpoz = pygame.Rect(212, 200, 50, 50)         #
+            button_sound = pygame.Rect(540, 285, 200, 50)            #
+            button_soundneg = pygame.Rect(503, 385, 50, 50)          # Création de chaque button utile aux options.
+            button_soundpoz = pygame.Rect(721, 385, 50, 50)         #
 
             # [**]
             mx , my = pygame.mouse.get_pos()
@@ -180,15 +184,16 @@ class Main:
 
             pygame.draw.rect(self.screen, (255, 255, 255), button_sound)                         #
             pygame.draw.rect(self.screen, (255, 255, 255), button_soundneg)                      #
-            self.draw_text("-", self.font2, (0, 0, 0), button_soundneg, 60, 213)                      #
+            self.draw_text("-", self.font2, (0, 0, 0), button_soundneg, 521, 385)                      #
             pygame.draw.rect(self.screen, (255, 255, 255), button_soundpoz)                      #
-            self.draw_text("+", self.font2, (0, 0, 0), button_soundpoz, 230, 213)                     #
-            self.draw_text("Volume: ", self.font2, (0, 0, 0), self.screen, 92, 215)                        # [-]
-            self.draw_numbers( int(self.lvl_sound * 100), (0, 0, 0), self.font2, self.screen, 175, 215)         #
+            self.draw_text("+", self.font2, (0, 0, 0), button_soundpoz, 739, 385)                     #
+            self.draw_text("Volume: ", self.font2, (0, 0, 0), self.screen, 558, 385)                        # [-]
+            self.draw_numbers(int(self.lvl_sound * 100), (0, 0, 0), self.font2, self.screen, 665, 385)         #
             if self.flag == False:                                                               #
-                self.draw_text('Pause Sound', self.font2, (0, 0, 0), button_sound, 86, 115)           #
+                self.draw_text('Pause', self.font2, (0, 0, 0), button_sound, 600, 290)           #
             elif self.flag == True:                                                              #
-                self.draw_text('Unpause Sound', self.font2, (0, 0, 0), button_sound, 76, 115)         #
+                self.draw_text('Reprendre', self.font2, (0, 0, 0), button_sound, 570, 290)         #
+
 
             click = False
 

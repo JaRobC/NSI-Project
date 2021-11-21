@@ -43,7 +43,9 @@ class Game: #On crée la classe pour le jeu
         
         #On ajoute le perso à ce groupe
         self.group.add(self.player)
-             # 
+
+    #################################################################################################
+
         self.font = pygame.font.SysFont('Comic Sans MS', 50)                 # 
         self.font2 = pygame.font.SysFont('Comic Sans MS', 30)                #
         self.font_button = pygame.font.SysFont('Comic Sans MS', 30)          # On se charge de la partie de déclaration des principale variable et
@@ -52,6 +54,8 @@ class Game: #On crée la classe pour le jeu
         self.click = False                                                   #
         self.flag = False 
         self.lvl_sound = 0.5
+
+    #################################################################################################
 
         #On créer les varaibles pour la récupération d'items
         self.nom_bois = 0
@@ -67,12 +71,19 @@ class Game: #On crée la classe pour le jeu
 
         self.enter_castle = False
 
+    #################################################################################################
+
         self.choice = False
+        self.choice2 = False
         self.money = 0
         self.pv = 100
         self.attack = 10
         self.isMoney = 0
-        
+
+        self.isAchat = False
+    
+    #################################################################################################
+
         #On créer les liste pour les collisions
         self.walls = []
         self.ress_bois = []
@@ -82,12 +93,34 @@ class Game: #On crée la classe pour le jeu
         self.castle = []
         self.castle_enter = []
         self.escalier = []
+        self.collision_panneau = []
+
         self.collision_attack1 = []
+        self.collision_attack2 = []
+        self.collision_attack3 = []
+        self.collision_attack4 = []
+
+        self.collision_vie1 = []
+        self.collision_vie2 = []
+        self.collision_vie3 = []
+        self.collision_vie4 = []
+
+        self.collision = []
+        self.table = []
+        self.biblio = []
+        self.vendre_bois1 = []
+        self.vendre_bois2 = []
+        self.vendre_pierre1 = []
+        self.vendre_pierre2 = []
+
+    #################################################################################################
 
         #On initialise les collisions en créeant des "boites"
         for obj in self.tmx_data.objects:
-            if obj.type == "collision" or obj.type == "collision_eau" or obj.type == "collision_panneau":
+            if obj.type == "collision" or obj.type == "collision_eau":
                 self.walls.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            elif obj.type == "collision_panneau":
+                self.collision_panneau.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
             elif obj.type == "collision_bois":
                 self.ress_bois.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
             elif obj.type == "collision_pierre":
@@ -101,6 +134,8 @@ class Game: #On crée la classe pour le jeu
             elif obj.type == "collision_castle_enter":
                 self.castle_enter.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
             
+
+###########################################################
 
     def play(self):
             pygame.mixer.music.load("./menu/sound/sound1.mp3")          #
@@ -131,21 +166,19 @@ class Game: #On crée la classe pour le jeu
 
         while running:   
 
-            print(self.lvl_sound)
-
             # La base de l'écran va être posé ici même, le fond d'écran mais aussi "l'entête" de l'onglet.                                                           
             self.screen.fill((202, 228, 241))                                            
             self.screen.blit(self.background1, (0, 0))                                        
-            self.draw_text('Island of Kingdoms', self.font, (255,215,0), self.screen, 50, 40)      
-            self.draw_text('Alpha 4.c', self.font2, (255, 255, 255), self.screen, 400, 450)        
+            self.draw_text('Island of Kingdoms', self.font, (255,215,0), self.screen, 420, 40)      
+            self.draw_text('Alpha 6.d', self.font2, (255, 255, 255), self.screen, 1120, 660)              
             
             # Creation de deux variables (mx et my) qui vont avoir la valeur du curseur de la souris. [**]
             mx , my = pygame.mouse.get_pos()  
 
             # Creation des variable button qui vont pemettre un echange de entre "page"/onglet de menu.
-            button_str = pygame.Rect(50, 100, 200, 50)                  
-            button_opt = pygame.Rect(50, 200, 200, 50)
-            button_ext = pygame.Rect(50, 300, 200, 50)
+            button_str = pygame.Rect(540, 235, 200, 50)                  
+            button_opt = pygame.Rect(540, 335, 200, 50)
+            button_ext = pygame.Rect(520, 435, 240, 50)
             
             # Déclaration des condition de ce qu'il va se passer pour chaque boutton si il est cliquer en faisant appelle à une autre fonction.
             if button_str.collidepoint((mx, my)):
@@ -165,11 +198,11 @@ class Game: #On crée la classe pour le jeu
                     main.main_menu()
 
             pygame.draw.rect(self.screen, (0, 255, 0), button_str)                       #
-            self.draw_text('RESUME', self.font_button, (255, 255, 255), button_str, 92, 115)   #
-            pygame.draw.rect(self.screen, (250, 250, 250), button_opt)                   # Ici c'est partie des dessins de chaqu'un des buttons et du text.
-            self.draw_text('OPTIONS', self.font_button, (0, 0, 0), button_opt, 78, 215)       # [-]
+            self.draw_text('REPRENDRE', self.font_button, (255, 255, 255), button_str, 550, 240)   #
+            pygame.draw.rect(self.screen, (250, 250, 250), button_opt)                   # Ici c'est partie des dessins de chaqu'un des bttons et du text.
+            self.draw_text('OPTIONS', self.font_button, (0, 0, 0), button_opt, 570, 340)       # [-]
             pygame.draw.rect(self.screen, (255, 0, 0), button_ext)                       #
-            self.draw_text('EXIT', self.font_button, (225, 255, 255), button_ext, 105, 315)   #
+            self.draw_text('RETOUR MENU', self.font_button, (225, 255, 255), button_ext, 530, 440)   #
             
             # La variable clique est reset sur false.
             click = False
@@ -206,14 +239,14 @@ class Game: #On crée la classe pour le jeu
         while running:
             self.screen.fill((202, 228, 241))                                        #
             self.screen.blit(self.background2, (0, 0))                                    # Set de base pour la fenaître des options.
-            self.draw_text('Options', self.font, (255, 255, 255), self.screen, 20, 20)         #
+            self.draw_text('Options', self.font, (255, 255, 255), self.screen, 551, 40)         #
 
             # Set du son ( voir le def soundlvl() plus haut).
             self.soundlvl()
 
-            button_sound = pygame.Rect(50, 100, 200, 50)            #
-            button_soundneg = pygame.Rect(38, 200, 50, 50)          # Création de chaque button utile aux options.
-            button_soundpoz = pygame.Rect(212, 200, 50, 50)         #
+            button_sound = pygame.Rect(540, 285, 200, 50)            #
+            button_soundneg = pygame.Rect(503, 385, 50, 50)          # Création de chaque button utile aux options.
+            button_soundpoz = pygame.Rect(721, 385, 50, 50)         #
 
             # [**]
             mx , my = pygame.mouse.get_pos()
@@ -251,15 +284,15 @@ class Game: #On crée la classe pour le jeu
 
             pygame.draw.rect(self.screen, (255, 255, 255), button_sound)                         #
             pygame.draw.rect(self.screen, (255, 255, 255), button_soundneg)                      #
-            self.draw_text("-", self.font2, (0, 0, 0), button_soundneg, 60, 213)                      #
+            self.draw_text("-", self.font2, (0, 0, 0), button_soundneg, 521, 385)                      #
             pygame.draw.rect(self.screen, (255, 255, 255), button_soundpoz)                      #
-            self.draw_text("+", self.font2, (0, 0, 0), button_soundpoz, 230, 213)                     #
-            self.draw_text("Volume: ", self.font2, (0, 0, 0), self.screen, 92, 215)                        # [-]
-            self.draw_numbers( int(self.lvl_sound * 100), (0, 0, 0), self.font2, self.screen, 175, 215)         #
+            self.draw_text("+", self.font2, (0, 0, 0), button_soundpoz, 739, 385)                     #
+            self.draw_text("Volume: ", self.font2, (0, 0, 0), self.screen, 558, 385)                        # [-]
+            self.draw_numbers(int(self.lvl_sound * 100), (0, 0, 0), self.font2, self.screen, 665, 385)         #
             if self.flag == False:                                                               #
-                self.draw_text('Pause Sound', self.font2, (0, 0, 0), button_sound, 86, 115)           #
+                self.draw_text('Pause', self.font2, (0, 0, 0), button_sound, 600, 290)           #
             elif self.flag == True:                                                              #
-                self.draw_text('Unpause Sound', self.font2, (0, 0, 0), button_sound, 76, 115)         #
+                self.draw_text('Reprendre', self.font2, (0, 0, 0), button_sound, 570, 290)         #
 
             click = False
 
@@ -278,6 +311,8 @@ class Game: #On crée la classe pour le jeu
             pygame.display.update()
             mainClock.tick(60)
 
+###########################################################
+
     def shop_world(self): #On définit le "switch" pour aller dans le monde du shop
         self.world = 'shop'
 
@@ -289,7 +324,7 @@ class Game: #On crée la classe pour le jeu
 
         if self.choice == True:
             #On donne les coordonées de spawn du joueur
-            self.player = Player(100, 100)
+            self.player = Player(265, 150)
         else:
             #self.spawn = ('player1_spawn', 'player2_spawn', 'player3_spawn')
             #On récupère la position du joueur initiale grâce aux point de spawn
@@ -312,8 +347,73 @@ class Game: #On crée la classe pour le jeu
                 self.escalier.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
             elif obj.type == "collision_walls":
                 self.walls.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+
             elif obj.type == "collision_attack1":
                 self.collision_attack1.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            elif obj.type == "collision_attack2":
+                self.collision_attack2.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            elif obj.type == "collision_attack3":
+                self.collision_attack3.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            elif obj.type == "collision_attack4":
+                self.collision_attack4.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+
+            elif obj.type == "collision_vie1":
+                self.collision_vie1.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            elif obj.type == "collision_vie2":
+                self.collision_vie2.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            elif obj.type == "collision_vie3":
+                self.collision_vie3.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            elif obj.type == "collision_vie4":
+                self.collision_vie4.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+
+    def chateau_world(self): #On définit le "switch" pour aller dans le monde du shop
+        self.world = 'chateau'
+        self.isAchat = False
+        
+        #On charge la carte 
+        self.tmx_data = pytmx.util_pygame.load_pygame('chateau.tmx')
+        map_data = pyscroll.data.TiledMapData(self.tmx_data)
+        map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
+        map_layer.zoom = 3
+
+        if self.choice == True:
+            #On donne les coordonées de spawn du joueur
+            self.player = Player(265, 150)
+        else:
+            #self.spawn = ('player1_spawn', 'player2_spawn', 'player3_spawn')
+            #On récupère la position du joueur initiale grâce aux point de spawn
+            self.player_pos = self.player.old_position
+            self.player = Player(self.player_pos[0], self.player_pos[1])
+        
+        #On crée le groupe rassemblant les différents layer de la map
+        self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=4)
+        
+        #On ajoute le perso à ce groupe
+        self.group.add(self.player)
+
+        #On créer les liste pour les collisions
+        self.escalier = []
+        self.collision = []
+
+        #On initialise les collisions en créeant des "boites"
+        for obj in self.tmx_data.objects:
+            if obj.type == "collision_escalier":
+                self.escalier.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            elif obj.type == "collision":
+                self.collision.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            if obj.type == "collision_table":
+                self.table.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            elif obj.type == "collision_book":
+                self.biblio.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+
+            elif obj.type == "collision_vendre1":
+                self.vendre_bois1.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            elif obj.type == "collision_vendre2":
+                self.vendre_bois2.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            elif obj.type == "collision_vendre3":
+                self.vendre_pierre1.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
+            elif obj.type == "collision_vendre4":
+                self.vendre_pierre2.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
 
     def world_world(self): #On définit le "switch" pour aller dans le monde principale
         self.world = 'world'
@@ -333,12 +433,18 @@ class Game: #On crée la classe pour le jeu
             #On récupère la position du joueur initiale grâce aux point de spawn
             self.player_pos = self.tmx_data.get_object_by_name(self.spawn[random.randint(0, 2)])
             self.player = Player(self.player_pos.x, self.player_pos.y)
-        else:
+        elif self.choice == True:
             #self.spawn = ('player1_spawn', 'player2_spawn', 'player3_spawn')
             #On récupère la position du joueur initiale grâce aux point de spawn
             self.player_pos = self.player.old_position
             self.player = Player(self.player_pos[0], self.player_pos[1])
             self.choice = True
+        elif self.choice2 == True:
+            self.spawn = ('castle_exit_spawn', 'castle_exit_spawn', 'castle_exit_spawn')
+            #On récupère la position du joueur initiale grâce aux point de spawn
+            self.player_pos = self.tmx_data.get_object_by_name(self.spawn[random.randint(0, 2)])
+            self.player = Player(self.player_pos.x, self.player_pos.y)
+        
         
         #On crée le groupe rassemblant les différents layer de la map
         self.group = pyscroll.PyscrollGroup(map_layer=map_layer, default_layer=7)
@@ -372,6 +478,69 @@ class Game: #On crée la classe pour le jeu
             elif obj.type == "collision_castle_enter":
                 self.castle_enter.append(pygame.Rect(obj.x, obj.y, obj.width, obj.height))
 
+###########################################################
+
+    def render_hud(self):
+
+        self.hud.textvie = str(self.pv)
+        self.hud.textarbre = str(self.nom_bois)
+        self.hud.textpierre = str(self.nom_pierre)
+        self.hud.textmoney = str(self.money)
+        self.hud.textdegats = str(self.attack)
+        if self.stop_bois == True:
+            self.stoparbre = self.hud.font_warning.render(self.hud.stoparbre, False, (255,0,0))
+            self.screen.blit(self.stoparbre, (10, 600))
+        if self.stop_pierre == True:
+            self.stoppierre = self.hud.font_warning.render(self.hud.stoppierre, False, (255, 0, 0))
+            self.screen.blit(self.stoppierre, (10, 650))
+        if self.world == 'world':
+            self.hud.render(self.screen, (0, 0, 0))
+        if self.world == 'shop':
+            self.hud.render(self.screen, (255, 255, 255))
+        if self.world == 'chateau':
+            self.hud.render(self.screen, (255, 255, 255))
+        pygame.display.flip()
+
+###########################################################
+
+    def shop_achat_attack(self, pressed, condition, prix, augmente, plus):
+
+        if pressed[pygame.K_a] and self.money >= prix and condition == True:
+            self.money = self.money - prix
+            print("ton argent restant est:", self.money)
+            self.attack = self.attack + plus
+            print("les dégats sont augmenté de ", prix, ". Ils sont donc à :", self.attack)
+            sleep(0.1)
+
+    def shop_achat_pv(self, pressed, condition, prix, augmente, plus):
+
+        if pressed[pygame.K_a] and self.money >= prix and condition == True:
+            self.money = self.money - prix
+            print("ton argent restant est:", self.money)
+            self.pv = self.pv + plus
+            print("les points de vie sont augmenté de ", prix, ". Ils sont donc à :", self.pv)
+            sleep(0.1)
+
+    def shop_vendre_buche(self, pressed, condition, nom_bois, augmente, plus):
+
+        if pressed[pygame.K_a] and self.nom_bois >= nom_bois and condition == True:
+            self.nom_bois = self.nom_bois - nom_bois
+            print("ton nombre de buche restant est:", self.nom_bois)
+            self.money = self.money + plus
+            print("ton argent est augmenté ", plus, ". Ils sont donc à :", self.money)
+            sleep(0.1)
+
+    def shop_vendre_pierre(self, pressed, condition, nom_pierre, augmente, plus):
+
+        if pressed[pygame.K_a] and self.nom_pierre >= nom_pierre and condition == True:
+            self.nom_pierre = self.nom_pierre - nom_pierre
+            print("ton nombre de pierre restant est:", self.nom_pierre)
+            self.money = self.money + plus
+            print("ton argent est augmenté ", plus, ". Ils sont donc à :", self.money)
+            sleep(0.1)
+
+###########################################################
+
     def update(self): #On créer la fonction qui va gérer les collisions
 
         #On fait une mise à jour du groupe afin de récupérer les différentes coordonées etc..
@@ -380,10 +549,21 @@ class Game: #On crée la classe pour le jeu
         #On effectue une variable pour éviter à retaper plusieurs fois la même chose
         pressed = pygame.key.get_pressed()
 
+    #################################################################################################
+
         for sprite in self.group.sprites():
 
             if sprite.feet.collidelist(self.walls) > -1 and self.world == 'world': #On vérifie les collisions
                 sprite.move_back() #On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+            elif sprite.feet.collidelist(self.collision_panneau) > -1 and self.world == 'world':
+                sprite.move_back()
+                if pressed[pygame.K_a]:
+                    self.pause()
+                    self.hud.panneau(self.screen)
+                    pygame.display.flip()
+                    sleep(3)
+                    self.play()
 
             elif sprite.feet.collidelist(self.ress_bois) > -1 and self.world == 'world': #On vérifie les collisions
                 sprite.move_back() #On effectue ce qu'il faut pour lorsqu'il y a collisions
@@ -392,13 +572,16 @@ class Game: #On crée la classe pour le jeu
                     if self.isMoney == 5:
                         self.money += random.randint(0, 5)
                         print(self.money)
+                    if self.attack >= 0 and self.attack <= 20:
+                        self.nom_bois += 1
+                    elif self.attack >= 21 and self.attack <= 50:
+                        self.nom_bois += 3
+                    elif self.attack >= 51:
+                        self.nom_bois += 5
+                    self.pv = self.pv - 1
                     self.suite_bois += 1
-                    self.nom_bois += 1
                     print("bois = ",self.nom_bois)
-                    self.hud.textarbre = str(self.nom_bois)
-                    self.hud.textpierre = str(self.nom_pierre)
-                    self.hud.render(self.screen)
-                    pygame.display.flip()
+                    self.render_hud()
                 if self.suite_bois >= 20: #On lance le "timer" pour éviter que la récolte soit infini
                     print("Vous avez atteint votre limite de récolte de bois")
                     self.stop_bois = True
@@ -411,13 +594,16 @@ class Game: #On crée la classe pour le jeu
                     if self.isMoney == 5:
                         self.money += random.randint(0, 5)
                         print(self.money)
+                    if self.attack >= 0 and self.attack <= 20:
+                        self.nom_pierre += 1
+                    elif self.attack >= 21 and self.attack <= 50:
+                        self.nom_pierre += 3
+                    elif self.attack >= 51:
+                        self.nom_pierre += 5
+                    self.pv = self.pv - 2
                     self.suite_pierre += 1
-                    self.nom_pierre += 1
                     print("pierre = ",self.nom_pierre)
-                    self.hud.textarbre = str(self.nom_bois)
-                    self.hud.textpierre = str(self.nom_pierre)
-                    self.hud.render(self.screen)
-                    pygame.display.flip()
+                    self.render_hud()
                 if self.suite_pierre >= 20: #On lance le "timer" pour éviter que la récolte soit infini
                     print("Vous avez atteint votre limite de récolte de pierres")
                     self.stop_pierre = True
@@ -434,7 +620,7 @@ class Game: #On crée la classe pour le jeu
 
             elif sprite.feet.collidelist(self.castle) > -1 and self.world == 'world': #On vérifie les collisions
                 sprite.move_back()
-                if pressed[pygame.K_a]:
+                if pressed[pygame.K_a] and self.enter_castle == False:
                     if self.nom_bois >= 40 and self.nom_pierre >= 40:
                         self.enter_castle = True
                         print("Vous avez accès au chateau")
@@ -446,10 +632,7 @@ class Game: #On crée la classe pour le jeu
                         self.manque_bois = 40 - self.nom_bois
                         print("Il vous manque ", self.manque_bois, " de bois")
                         print("Il vous manque ", self.manque_pierre, " de pierre")
-                self.hud.textarbre = str(self.nom_bois)
-                self.hud.textpierre = str(self.nom_pierre)
-                self.hud.render(self.screen)
-                pygame.display.flip()
+                self.render_hud()
             
             elif sprite.feet.collidelist(self.castle_enter) > -1 and self.world == 'world': #On vérifie les collisions
                 if self.enter_castle == False:
@@ -461,45 +644,191 @@ class Game: #On crée la classe pour le jeu
                     print("Il vous manque ", self.manque_pierre, " de pierre")
                 elif self.enter_castle == True:
                     print("ok")
-                self.hud.textarbre = str(self.nom_bois)
-                self.hud.textpierre = str(self.nom_pierre)
-                self.hud.render(self.screen)
-                pygame.display.flip()
+                    self.choice = True
+                    self.chateau_world()
+                self.render_hud()
 
-            if sprite.feet.collidelist(self.walls) > -1 and self.world == 'shop': #On vérifie les collisions
+    #################################################################################################
+
+            elif sprite.feet.collidelist(self.walls) > -1 and self.world == 'shop': #On vérifie les collisions
                 sprite.move_back() #On effectue ce qu'il faut pour lorsqu'il y a collisions
-            
-            if sprite.feet.collidelist(self.collision_attack1) > -1 and self.world == 'shop': #On vérifie les collisions   
-                sprite.move_back()#On effectue ce qu'il faut pour lorsqu'il y a collisions
-                if pressed[pygame.K_a] and self.money >= 5:
-                    self.money = self.money - 5
-                    print("ton argent restant est:", self.money)
-                    self.attack = self.attack + 5
-                    print("les dégats sont augmenté de 5. Ils sont donc à :", self.attack)
-                    sleep(1)
-
 
             elif sprite.feet.collidelist(self.escalier) > -1 and self.world == 'shop': #On vérifie les collisions
                 self.choice = True
                 self.world_world()
+
+            elif sprite.feet.collidelist(self.collision) > -1 and self.world == 'chateau': #On vérifie les collisions
+                sprite.move_back() #On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+            elif sprite.feet.collidelist(self.biblio) > -1 and self.world == 'chateau': #On vérifie les collisions
+                sprite.move_back() #On effectue ce qu'il faut pour lorsqu'il y a collisions
+            
+            elif sprite.feet.collidelist(self.escalier) > -1 and self.world == 'chateau': #On vérifie les collisions
+                self.choice2 = True
+                self.choice = False
+                self.world_world()
+
+            elif sprite.feet.collidelist(self.table) > -1 and self.world == 'chateau': #On vérifie les collisions
+                sprite.move_back() #On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+    #################################################################################################
+
+            elif sprite.feet.collidelist(self.collision_attack1) > -1 and self.world == 'shop': #On vérifie les collisions  :
+                if self.isAchat == False:
+                    self.hud.attack1 = True
+                    self.isAchat = True
+                sprite.move_back()#On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+            elif sprite.feet.collidelist(self.collision_attack2) > -1 and self.world == 'shop': #On vérifie les collisions  :
+                if self.isAchat == False:
+                    self.hud.attack2 = True
+                    self.isAchat = True
+                sprite.move_back()#On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+            elif sprite.feet.collidelist(self.collision_attack3) > -1 and self.world == 'shop': #On vérifie les collisions  :
+                if self.isAchat == False:
+                    self.hud.attack3 = True
+                    self.isAchat = True
+                sprite.move_back()#On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+            elif sprite.feet.collidelist(self.collision_attack4) > -1 and self.world == 'shop': #On vérifie les collisions  :
+                if self.isAchat == False:
+                    self.hud.attack4 = True
+                    self.isAchat = True
+                sprite.move_back()#On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+            elif sprite.feet.collidelist(self.collision_vie1) > -1 and self.world == 'shop': #On vérifie les collisions  :
+                if self.isAchat == False:
+                    self.hud.vie1 = True
+                    self.isAchat = True
+                sprite.move_back()#On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+            elif sprite.feet.collidelist(self.collision_vie2) > -1 and self.world == 'shop': #On vérifie les collisions  :
+                if self.isAchat == False:
+                    self.hud.vie2 = True
+                    self.isAchat = True
+                sprite.move_back()#On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+            elif sprite.feet.collidelist(self.collision_vie3) > -1 and self.world == 'shop': #On vérifie les collisions  :
+                if self.isAchat == False:
+                    self.hud.vie3 = True
+                    self.isAchat = True
+                sprite.move_back()#On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+            elif sprite.feet.collidelist(self.collision_vie4) > -1 and self.world == 'shop': #On vérifie les collisions  :
+                if self.isAchat == False:
+                    self.hud.vie4 = True
+                    self.isAchat = True
+                sprite.move_back()#On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+            elif sprite.feet.collidelist(self.vendre_bois1) > -1 and self.world == 'chateau': #On vérifie les collisions  :
+                if self.isAchat == False:
+                    self.hud.buche1 = True
+                    self.isAchat = True
+                sprite.move_back()#On effectue ce qu'il faut pour lorsqu'il y a collisions
+            
+            elif sprite.feet.collidelist(self.vendre_bois2) > -1 and self.world == 'chateau': #On vérifie les collisions  :
+                if self.isAchat == False:
+                    self.hud.buche2 = True
+                    self.isAchat = True
+                sprite.move_back()#On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+            elif sprite.feet.collidelist(self.vendre_pierre1) > -1 and self.world == 'chateau': #On vérifie les collisions  :
+                if self.isAchat == False:
+                    self.hud.pierre1 = True
+                    self.isAchat = True
+                sprite.move_back()#On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+            elif sprite.feet.collidelist(self.vendre_pierre2) > -1 and self.world == 'chateau': #On vérifie les collisions  :
+                if self.isAchat == False:
+                    self.hud.pierre2 = True
+                    self.isAchat = True
+                sprite.move_back()#On effectue ce qu'il faut pour lorsqu'il y a collisions
+
+        if pressed[pygame.K_KP_ENTER] and self.hud.attack1 == True:
+            self.hud.attack1 = False
+            self.isAchat = False
+        self.shop_achat_attack(pressed, self.hud.attack1, 5, self.attack, 5)
+
+        if pressed[pygame.K_KP_ENTER] and self.hud.attack2 == True:
+            self.hud.attack2 = False
+            self.isAchat = False
+        self.shop_achat_attack(pressed, self.hud.attack2, 20, self.attack, 10)
+
+        if pressed[pygame.K_KP_ENTER] and self.hud.attack3 == True:
+            self.hud.attack3 = False
+            self.isAchat = False
+        self.shop_achat_attack(pressed, self.hud.attack3, 75, self.attack, 50)
+
+        if pressed[pygame.K_KP_ENTER] and self.hud.attack4 == True:
+            self.hud.attack4 = False
+            self.isAchat = False
+        self.shop_achat_attack(pressed, self.hud.attack4, 200, self.attack, 100)
+
+        if pressed[pygame.K_KP_ENTER] and self.hud.vie1 == True:
+            self.hud.vie1 = False
+            self.isAchat = False
+        self.shop_achat_pv(pressed, self.hud.vie1, 5, self.pv, 5)
+
+        if pressed[pygame.K_KP_ENTER] and self.hud.vie2 == True:
+            self.hud.vie2 = False
+            self.isAchat = False
+        self.shop_achat_pv(pressed, self.hud.vie2, 20, self.pv, 10)
+
+        if pressed[pygame.K_KP_ENTER] and self.hud.vie3 == True:
+            self.hud.vie3 = False
+            self.isAchat = False
+        self.shop_achat_pv(pressed, self.hud.vie3, 75, self.pv, 50)
+
+        if pressed[pygame.K_KP_ENTER] and self.hud.vie4 == True:
+            self.hud.vie4 = False
+            self.isAchat = False
+        self.shop_achat_pv(pressed, self.hud.vie4, 200, self.pv, 100)
+
+        if pressed[pygame.K_KP_ENTER] and self.hud.buche1 == True:
+            self.hud.buche1 = False
+            self.isAchat = False
+        self.shop_vendre_buche(pressed, self.hud.buche1, 1, self.pv, 10)
+
+        if pressed[pygame.K_KP_ENTER] and self.hud.buche2 == True:
+            self.hud.buche2 = False
+            self.isAchat = False
+        self.shop_vendre_buche(pressed, self.hud.buche2, 10, self.pv, 100)
+
+        if pressed[pygame.K_KP_ENTER] and self.hud.pierre1 == True:
+            self.hud.pierre1 = False
+            self.isAchat = False
+        self.shop_vendre_pierre(pressed, self.hud.pierre1, 1, self.pv, 12)
+
+        if pressed[pygame.K_KP_ENTER] and self.hud.pierre2 == True:
+            self.hud.pierre2 = False
+            self.isAchat = False
+        self.shop_vendre_pierre(pressed, self.hud.pierre2, 10, self.pv, 120)
+
+    #################################################################################################
         
         if pressed[pygame.K_ESCAPE]:
             self.main_menu()
+
+        if pressed[pygame.K_LCTRL] and pressed[pygame.K_m] and pressed[pygame.K_LALT]:
+            self.money += 10000
+            sleep(0.1) 
+        
+        if pressed[pygame.K_LCTRL] and pressed[pygame.K_p] and pressed[pygame.K_LALT]:
+            self.nom_pierre += 10000
+            sleep(0.1) 
+
+        if pressed[pygame.K_LCTRL] and pressed[pygame.K_b] and pressed[pygame.K_LALT]:
+            self.nom_bois += 10000 
+            sleep(0.1)
+
+###########################################################
 
     def screen_update(self): #On créer une fonction qui vient mettre à jour l'écran
         self.group.update()
         self.group.center(self.player.rect.center)
         self.group.draw(self.screen)
-        self.hud.textarbre = str(self.nom_bois)
-        self.hud.textpierre = str(self.nom_pierre)
-        self.hud.render(self.screen)
-        if self.stop_bois == True:
-            self.stoparbre = self.font.render(self.hud.stoparbre, False, (255,0,0))
-            self.screen.blit(self.stoparbre, (200, 260))
-        elif self.stop_pierre == True:
-            self.stoppierre = self.font.render(self.hud.stoppierre, False, (255, 0, 0))
-            self.screen.blit(self.stoppierre, (200, 360))
-        pygame.display.flip()
+        self.render_hud()
 
     def anim_compil(self, anim1, anim2, anim3): #On créer une fonction pour effectuer les différentes animations de marche
         self.player.animations(anim1)
@@ -510,16 +839,7 @@ class Game: #On crée la classe pour le jeu
         sleep(self.ims)
         self.player.animations(anim3)
         self.screen_update() #On met à jour l'écran
-        self.hud.textarbre = str(self.nom_bois)
-        self.hud.textpierre = str(self.nom_pierre)
-        self.hud.render(self.screen)
-        if self.stop_bois == True:
-            self.stoparbre = self.font.render(self.hud.stoparbre, False, (255,0,0))
-            self.screen.blit(self.stoparbre, (200, 260))
-        elif self.stop_pierre == True:
-            self.stoppierre = self.font.render(self.hud.stoppierre, False, (255, 0, 0))
-            self.screen.blit(self.stoppierre, (200, 360))
-        pygame.display.flip()
+        self.render_hud()
 
     def handle_input(self): #On créer une fonction afin de déplacer le joueur avec les animations
 
@@ -546,37 +866,35 @@ class Game: #On crée la classe pour le jeu
 
         while tourne: #On lance la boucle
 
+            #################################################################################################
+
             self.player.save_location() #
             self.handle_input()         #   On effectue les différentes fonctions
             self.update()               #
             self.screen_update()        #
-            self.hud.textarbre = str(self.nom_bois)
-            self.hud.textpierre = str(self.nom_pierre)
-            self.hud.render(self.screen)
-            pygame.display.flip()
+            self.render_hud()
+
+            #################################################################################################
 
             if self.stop_bois == True: #On effectue le timer de la récolte des items
                 self.stop_stop_bois += 1
-                self.stoparbre = self.font.render(self.hud.stoparbre, False, (255,0,0))
-                self.screen.blit(self.stoparbre, (200, 260))
-                pygame.display.flip()
+                self.render_hud()
                 if self.stop_stop_bois >= 500:
                     print("Lest go arbre")
                     self.stop_stop_bois = 0
                     self.suite_bois = 0
                     self.stop_bois = False
-                    
 
             if self.stop_pierre == True:  #On effectue le timer de la récolte des items
                 self.stop_stop_pierre += 1
-                self.stoppierre = self.font.render(self.hud.stoppierre, False, (255, 0, 0))
-                self.screen.blit(self.stoppierre, (200, 360))
-                pygame.display.flip()
+                self.render_hud()
                 if self.stop_stop_pierre >= 500:
                     print("Lest go pierre")
                     self.stop_stop_pierre = 0
                     self.suite_pierre = 0
                     self.stop_pierre = False
+
+            #################################################################################################
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: #On lance la condition si le joueur appuye sur la croix
