@@ -5,6 +5,7 @@ from pygame.constants import K_ESCAPE, KEYDOWN, MOUSEBUTTONDOWN, QUIT           
 from pyscroll import data   # On importe les bibliothèques / librairies
 import pytmx                #
 import pyscroll             #
+import shelve
 import random
 from hud import HUD
 from mechant import Mechant               #
@@ -22,7 +23,9 @@ class Game: #On crée la classe pour le jeu
 
         #On crée la fenètre
         self.screen = pygame.display.set_mode((1280, 720))
-        pygame.display.set_caption("Island of Kingdoms")
+        pygame.display.set_caption("Island of Kingdoms - In Game")
+        self.logo = pygame.image.load('logo.png')
+        pygame.display.set_icon(self.logo)
 
         #On charge la carte 
         self.tmx_data = pytmx.util_pygame.load_pygame('carte.tmx')
@@ -55,8 +58,11 @@ class Game: #On crée la classe pour le jeu
         self.font = pygame.font.SysFont('Comic Sans MS', 50)                 # 
         self.font2 = pygame.font.SysFont('Comic Sans MS', 30)                #
         self.font_button = pygame.font.SysFont('Comic Sans MS', 30)          # On se charge de la partie de déclaration des principale variable et
+        self.font_button2 = pygame.font.SysFont('Comic Sans MS', 70)          #
         self.background1 = pygame.image.load("./menu/background/bg1.jpg")    # de l'initialisation de base de Pygame.
         self.background2 = pygame.image.load("./menu/background/bg2.png")    #
+        self.bouton_suivant = pygame.image.load("bouton suivant.png")
+        self.bouton_precedent = pygame.image.load("bouton precedent.png")
         self.click = False                                                   #
         self.flag = False 
         self.lvl_sound = 0.5
@@ -85,10 +91,17 @@ class Game: #On crée la classe pour le jeu
         self.pv = 100
         self.attack = 10
         self.isMoney = 0
+        self.nom_mechant = 0
+
+        self.isQuest1 = False
+        self.isQuest2 = False
 
         self.isAchat = False
-
-        self.nom_mechant = 0
+        self.save_data = shelve.open("data")
+        try:
+            self.nom_meilleur = self.save_data['nombre zombie']
+        except KeyError:
+            self.nom_meilleur = 0
         self.isKilling = False
     
     #################################################################################################
@@ -174,7 +187,6 @@ class Game: #On crée la classe pour le jeu
         click = False     
 
         while running:   
-
             # La base de l'écran va être posé ici même, le fond d'écran mais aussi "l'entête" de l'onglet.                                                           
             self.screen.fill((202, 228, 241))                                            
             self.screen.blit(self.background1, (0, 0))                                        
@@ -187,7 +199,8 @@ class Game: #On crée la classe pour le jeu
             # Creation des variable button qui vont pemettre un echange de entre "page"/onglet de menu.
             button_str = pygame.Rect(540, 235, 200, 50)                  
             button_opt = pygame.Rect(540, 335, 200, 50)
-            button_ext = pygame.Rect(520, 435, 240, 50)
+            button_ext = pygame.Rect(520, 535, 240, 50)
+            button_que = pygame.Rect(540, 435, 200, 50)
             
             # Déclaration des condition de ce qu'il va se passer pour chaque boutton si il est cliquer en faisant appelle à une autre fonction.
             if button_str.collidepoint((mx, my)):
@@ -201,17 +214,25 @@ class Game: #On crée la classe pour le jeu
             if button_opt.collidepoint((mx, my)):
                 if click:
                     self.options()
+                    running = False
             if button_ext.collidepoint((mx, my)):
                 if click:
                     main = Main()
                     main.main_menu()
+                    running = False
+            if button_que.collidepoint((mx, my)):
+                if click:
+                    self.quest_screen()
+                    running = False
 
             pygame.draw.rect(self.screen, (0, 255, 0), button_str)                       #
             self.draw_text('REPRENDRE', self.font_button, (255, 255, 255), button_str, 550, 240)   #
             pygame.draw.rect(self.screen, (250, 250, 250), button_opt)                   # Ici c'est partie des dessins de chaqu'un des bttons et du text.
             self.draw_text('OPTIONS', self.font_button, (0, 0, 0), button_opt, 570, 340)       # [-]
             pygame.draw.rect(self.screen, (255, 0, 0), button_ext)                       #
-            self.draw_text('RETOUR MENU', self.font_button, (225, 255, 255), button_ext, 530, 440)   #
+            self.draw_text('RETOUR MENU', self.font_button, (225, 255, 255), button_ext, 530, 540)   #
+            pygame.draw.rect(self.screen, (250, 0, 250), button_que)                       #
+            self.draw_text('QUEST', self.font_button, (225, 255, 255), button_que, 580, 440)   #
             
             # La variable clique est reset sur false.
             click = False
@@ -228,6 +249,68 @@ class Game: #On crée la classe pour le jeu
                             self.world_world()
                         running = False
                         self.choice == False                  #
+                if event.type == MOUSEBUTTONDOWN:       #
+                    if event.button == 1:               #
+                        click = True                    #
+
+            # Mise à jour de l'affichage.
+            pygame.display.update()
+
+            # On définit les ticks de notre jeu (le temps pour éviter que cela soit trop rapide).
+            mainClock.tick(60)
+    # Creation de la feneître principal du Menu.
+    def quest_screen(self):                                                                
+        running = True                                                              
+        click = False     
+        while running:   
+
+            # La base de l'écran va être posé ici même, le fond d'écran mais aussi "l'entête" de l'onglet.                                                           
+            self.screen.fill((202, 228, 241))                                            
+            self.screen.blit(self.background1, (0, 0))                                         
+            self.hud.questbase = True
+            self.hud.quest2 = True
+            if self.hud.page == 1:
+                self.hud.quest(self.hud.questbase, self.screen, self.hud.questimg, self.hud.questbase_title, self.hud.questbase_desc, self.hud.questbase_desc1, self.hud.questbase_desc2, self.hud.questbase_desc3, self.hud.questbase_isDo)      
+            elif self.hud.page == 2:
+                self.hud.quest(self.hud.quest2, self.screen, self.hud.questimg, self.hud.quest2_title, self.hud.quest2_desc, self.hud.quest2_desc1, self.hud.quest2_desc2, self.hud.quest2_desc3, self.hud.quest2_isDo)
+            # Creation de deux variables (mx et my) qui vont avoir la valeur du curseur de la souris. [**]
+            mx , my = pygame.mouse.get_pos()  
+
+            # Creation des variable button qui vont pemettre un echange de entre "page"/onglet de menu.
+            button_ext = pygame.Rect(1020, 650, 240, 50)
+            button_suiv = pygame.Rect(1145, 335, 100, 100)
+            button_prec = pygame.Rect(25, 335, 97, 97)
+            
+            # Déclaration des condition de ce qu'il va se passer pour chaque boutton si il est cliquer en faisant appelle à une autre fonction.
+            if button_ext.collidepoint((mx, my)):
+                if click:
+                    self.main_menu()
+                    running = False
+            if button_suiv.collidepoint((mx, my)):
+                if click:
+                    self.hud.page += 1
+            if button_prec.collidepoint((mx, my)):
+                if click:
+                    self.hud.page -= 1
+
+            pygame.draw.rect(self.screen, (255, 0, 0), button_ext)                       #
+            self.draw_text('RETOUR MENU', self.font_button, (225, 255, 255), button_ext, 1030, 655)   #
+    
+            pygame.draw.rect(self.screen, (255, 255, 255), button_suiv)                       #
+            self.screen.blit(self.bouton_suivant, (1130, 330))
+            self.draw_text('>', self.font_button2, (0, 0, 0), button_ext, 1185, 330)   #
+
+            pygame.draw.rect(self.screen, (255, 255, 255), button_prec)                       #
+            self.screen.blit(self.bouton_suivant, (5, 330))
+            self.draw_text('<', self.font_button2, (0, 0, 0), button_ext, 60, 330)   #
+            
+            # La variable clique est reset sur false.
+            click = False
+
+            for event in pygame.event.get():            #
+                if event.type == QUIT:                  #
+                    pygame.quit()                       #
+                    sys.exit()                          #                #
                 if event.type == MOUSEBUTTONDOWN:       #
                     if event.button == 1:               #
                         click = True                    #
@@ -503,6 +586,7 @@ class Game: #On crée la classe pour le jeu
         self.hud.textmoney = str(self.money)
         self.hud.textdegats = str(self.attack)
         self.hud.textzombie = str(self.nom_mechant)
+        self.hud.textmeilleur = str(self.nom_meilleur)
         if self.stop_bois == True:
             self.stoparbre = self.hud.font_warning.render(self.hud.stoparbre, False, (255,0,0))
             self.screen.blit(self.stoparbre, (10, 600))
@@ -555,6 +639,17 @@ class Game: #On crée la classe pour le jeu
             print("ton argent est augmenté ", plus, ". Ils sont donc à :", self.money)
             sleep(0.1)
 
+    def isQuestValid(self):
+        if self.hud.questbase_isDo == True and self.isQuest1 == False:
+            self.money += 10
+            self.hud.questbase_cond = True
+            self.isQuest1 = True
+        if self.hud.quest2_isDo == True and self.isQuest2 == False:
+            self.money += 10
+            self.hud.quest2_cond = True
+            self.isQuest2 = True
+
+
     def isDead(self):
         if self.mechant.pv <= 0:
             self.nom_mechant += 1
@@ -579,6 +674,9 @@ class Game: #On crée la classe pour le jeu
                     self.nom_pierre += 10
                 elif self.nom_mechant >= 51 and self.nom_mechant <= 100:
                     self.nom_pierre += 20
+            if self.nom_mechant >= 1:
+                self.hud.questbase_isDo = True
+            self.isQuestValid()
             self.isKilling = False
             self.mechant.kill()
             sleep(0.1)
@@ -847,62 +945,62 @@ class Game: #On crée la classe pour le jeu
                 sleep(0.1)
             self.player.move_back()
 
-        if pressed[pygame.K_KP_ENTER] and self.hud.attack1 == True:
+        if pressed[pygame.K_RETURN] and self.hud.attack1 == True:
             self.hud.attack1 = False
             self.isAchat = False
         self.shop_achat_attack(pressed, self.hud.attack1, 5, self.attack, 5)
 
-        if pressed[pygame.K_KP_ENTER] and self.hud.attack2 == True:
+        if pressed[pygame.K_RETURN] and self.hud.attack2 == True:
             self.hud.attack2 = False
             self.isAchat = False
         self.shop_achat_attack(pressed, self.hud.attack2, 20, self.attack, 10)
 
-        if pressed[pygame.K_KP_ENTER] and self.hud.attack3 == True:
+        if pressed[pygame.K_RETURN] and self.hud.attack3 == True:
             self.hud.attack3 = False
             self.isAchat = False
         self.shop_achat_attack(pressed, self.hud.attack3, 75, self.attack, 50)
 
-        if pressed[pygame.K_KP_ENTER] and self.hud.attack4 == True:
+        if pressed[pygame.K_RETURN] and self.hud.attack4 == True:
             self.hud.attack4 = False
             self.isAchat = False
         self.shop_achat_attack(pressed, self.hud.attack4, 200, self.attack, 100)
 
-        if pressed[pygame.K_KP_ENTER] and self.hud.vie1 == True:
+        if pressed[pygame.K_RETURN] and self.hud.vie1 == True:
             self.hud.vie1 = False
             self.isAchat = False
         self.shop_achat_pv(pressed, self.hud.vie1, 5, self.pv, 5)
 
-        if pressed[pygame.K_KP_ENTER] and self.hud.vie2 == True:
+        if pressed[pygame.K_RETURN] and self.hud.vie2 == True:
             self.hud.vie2 = False
             self.isAchat = False
         self.shop_achat_pv(pressed, self.hud.vie2, 20, self.pv, 10)
 
-        if pressed[pygame.K_KP_ENTER] and self.hud.vie3 == True:
+        if pressed[pygame.K_RETURN] and self.hud.vie3 == True:
             self.hud.vie3 = False
             self.isAchat = False
         self.shop_achat_pv(pressed, self.hud.vie3, 75, self.pv, 50)
 
-        if pressed[pygame.K_KP_ENTER] and self.hud.vie4 == True:
+        if pressed[pygame.K_RETURN] and self.hud.vie4 == True:
             self.hud.vie4 = False
             self.isAchat = False
         self.shop_achat_pv(pressed, self.hud.vie4, 200, self.pv, 100)
 
-        if pressed[pygame.K_KP_ENTER] and self.hud.buche1 == True:
+        if pressed[pygame.K_RETURN] and self.hud.buche1 == True:
             self.hud.buche1 = False
             self.isAchat = False
         self.shop_vendre_buche(pressed, self.hud.buche1, 1, self.pv, 10)
 
-        if pressed[pygame.K_KP_ENTER] and self.hud.buche2 == True:
+        if pressed[pygame.K_RETURN] and self.hud.buche2 == True:
             self.hud.buche2 = False
             self.isAchat = False
         self.shop_vendre_buche(pressed, self.hud.buche2, 10, self.pv, 100)
 
-        if pressed[pygame.K_KP_ENTER] and self.hud.pierre1 == True:
+        if pressed[pygame.K_RETURN] and self.hud.pierre1 == True:
             self.hud.pierre1 = False
             self.isAchat = False
         self.shop_vendre_pierre(pressed, self.hud.pierre1, 1, self.pv, 12)
 
-        if pressed[pygame.K_KP_ENTER] and self.hud.pierre2 == True:
+        if pressed[pygame.K_RETURN] and self.hud.pierre2 == True:
             self.hud.pierre2 = False
             self.isAchat = False
         self.shop_vendre_pierre(pressed, self.hud.pierre2, 10, self.pv, 120)
@@ -927,6 +1025,10 @@ class Game: #On crée la classe pour le jeu
         if self.pv <= 0:
             main = Main()
             main.main_menu()
+
+        if self.nom_bois >= 5:
+                self.hud.quest2_isDo = True
+        self.isQuestValid()
 
 ###########################################################
 
@@ -999,6 +1101,23 @@ class Game: #On crée la classe pour le jeu
                     self.stop_stop_pierre = 0
                     self.suite_pierre = 0
                     self.stop_pierre = False
+
+            if self.hud.questbase_cond == True: #On effectue le timer du popup
+                self.hud.questbase_stop += 1
+                if self.hud.questbase_stop >= 200:
+                    self.hud.questbase_stop = 0
+                    print("ok")
+                    self.hud.questbase_cond = False
+
+            if self.hud.quest2_cond == True: #On effectue le timer du popup
+                self.hud.quest2_stop += 1
+                if self.hud.quest2_stop >= 200:
+                    self.hud.quest2_stop = 0
+                    print("ok")
+                    self.hud.quest2_cond = False
+            
+            if self.nom_mechant > self.nom_meilleur:
+                self.save_data['nombre zombie'] = self.nom_mechant
 
             #################################################################################################
 

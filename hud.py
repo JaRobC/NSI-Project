@@ -7,14 +7,19 @@ class HUD:
         self.shopinterface = pygame.image.load('shop interface.png')
         self.panneauimg = pygame.image.load("fond panneau.png").convert()
         self.panneauimg.set_alpha(158)
+        self.questimg = pygame.image.load("quest.png")
+        self.croix = pygame.image.load("croix rouge.png")
+        self.fleche = pygame.image.load("fleche verte.png")
+        self.popup_img = pygame.image.load("popup quest.png")
 
-
+    ############
         self.textvie = "0000"
         self.textarbre = "0000" 
         self.textpierre = "0000"
         self.textmoney = "0000" 
         self.textdegats = "0000"
         self.textzombie = "0000"
+        self.textmeilleur = "0000"
 
         self.vie = "Vie :"
         self.arbre = "Bois :"
@@ -22,10 +27,12 @@ class HUD:
         self.money = "Argent :"
         self.degats = "Dégats :"
         self.zombie = "Nombre de zombie :"
+        self.meilleur = "Meilleur score de zombie :"
 
         self.stoparbre = "Limite de récolte de bois !"
         self.stoppierre = "Limite de récolte de pierre !"
 
+    ############
         self.achat_acheter = "Appuyer sur A pour acheter"
         self.achat_continuer = "Appuyer sur entrée pour"
         self.achat_continuer2 = "continuer"
@@ -57,7 +64,7 @@ class HUD:
         self.attack4_desc2 = "supplémentaire en payant"
         self.attack4_desc3 = "200 d'argent"
         self.attack4 = False
-        ######
+        
         self.vie1_title = "Vie + 5"
         self.vie1_desc = "Acheter cette amélioration"
         self.vie1_desc1 = "pour avoir 5 de vie"
@@ -113,11 +120,40 @@ class HUD:
         self.pierre2_desc2 = "supplémentaire"
         self.pierre2_desc3 = ""
         self.pierre2 = False
-        
+    ############
+        self.page = 1
+
+        self.questbase_title = "Tuer 1 zombie"
+        self.questbase_desc = "Afin de finir cette quête, vous"
+        self.questbase_desc1 = "devrez tuer 1 zombie afin de"
+        self.questbase_desc2 = "recevoir 10 d'argent"
+        self.questbase_desc3 = ""
+        self.questbase = False
+        self.questbase_isDo = False
+
+        self.popup_questbase_desc = "Vous avez reçu 10 d'argent"
+        self.questbase_cond = False
+        self.questbase_stop = 0
+        ####
+        self.quest2_title = "Couper 5 arbres"
+        self.quest2_desc = "Afin de finir cette quête, vous"
+        self.quest2_desc1 = "devrez abattre 5 arbres ou"
+        self.quest2_desc2 = "tronc afin de recevoir"
+        self.quest2_desc3 = "10 d'argent"
+        self.quest2 = False
+        self.quest2_isDo = False
+
+        self.popup_quest2_desc = "Vous avez reçu 10 d'argent"
+        self.quest2_cond = False
+        self.quest2_stop = 0
+    ###########
         self.panneau_intro = "Bonjour voyageur,"
 
         self.font_achat = pygame.font.SysFont('Comic Sans MS', 18)
         self.font = pygame.font.SysFont('Comic Sans MS', 36)
+        self.font_title_quest = pygame.font.SysFont('Comic Sans MS', 50)
+        self.font_desc_quest = pygame.font.SysFont('Comic Sans MS', 24)
+        self.font_desc_popup = pygame.font.SysFont('Comic Sans MS', 20)
         self.font_warning = pygame.font.SysFont('Comic Sans MS', 28)
         self.font_panneau = pygame.font.SysFont('Comics Sans MS', 50)
           
@@ -149,6 +185,45 @@ class HUD:
             achat_desc = self.font_achat.render(self.achat_continuer2, False, (0, 0, 0))
             screen.blit(achat_desc, (990, 320))
 
+    def quest(self, condition_quest, screen, fond, titre, description_1, description_2, description_3, description_4, isDo):
+        if condition_quest == True:
+            screen.blit(fond, (400, 0))
+
+            quest = self.font_title_quest.render("Quêtes", False, (0, 0, 0))
+            screen.blit(quest, (550, 42))
+
+            quest_title = self.font_warning.render(titre, False, (0, 0, 0))
+            screen.blit(quest_title, (560, 205))
+
+            quest_desc = self.font_desc_quest.render(description_1, False, (0, 0, 0))
+            screen.blit(quest_desc, (470, 300))
+
+            quest_desc = self.font_desc_quest.render(description_2, False, (0, 0, 0))
+            screen.blit(quest_desc, (470, 350))
+
+            quest_desc = self.font_desc_quest.render(description_3, False, (0, 0, 0))
+            screen.blit(quest_desc, (470, 400))
+
+            quest_desc = self.font_desc_quest.render(description_4, False, (0, 0, 0))
+            screen.blit(quest_desc, (470, 450))
+
+            if isDo == False:
+                screen.blit(self.croix, (479, 210))
+            elif isDo == True:
+                screen.blit(self.fleche, (790, 210))
+    
+    def popup_quest(self, condition, screen, fond, titre, desc):
+        if condition == True:
+            screen.blit(fond, (550, 20))
+
+            quest_title = self.font_warning.render(titre, False, (0, 0, 0))
+            screen.blit(quest_title, (570, 25))
+
+            quest_desc = self.font_desc_popup.render(desc, False, (0, 0, 0))
+            screen.blit(quest_desc, (570, 55))
+
+            pygame.display.flip()
+
     def render(self, screen, color):
 
         textvie = self.font.render(self.textvie, False, color)
@@ -157,6 +232,7 @@ class HUD:
         textmoney = self.font.render(self.textmoney, False, color)
         textdegats = self.font.render(self.textdegats, False, color)
         textzombie = self.font.render(self.textzombie, False, color)
+        textmeilleur = self.font.render(self.textmeilleur, False, color)
 
         vie = self.font.render(self.vie, False, color)
         arbre = self.font.render(self.arbre, False, color)
@@ -164,6 +240,7 @@ class HUD:
         money = self.font.render(self.money, False, color)
         degats = self.font.render(self.degats, False, color)
         zombie = self.font.render(self.zombie, False, color)
+        meilleur = self.font.render(self.meilleur, False, color)
 
         screen.blit(textpierre, (1145, 660))
         screen.blit(textarbre, (1145, 620))
@@ -171,6 +248,7 @@ class HUD:
         screen.blit(textdegats, (1145, 540))
         screen.blit(textvie, (1145, 500))
         screen.blit(textzombie, (400, 15))
+        screen.blit(textmeilleur, (475, 70))
  
         screen.blit(arbre, (1000, 620))
         screen.blit(pierre, (1000, 660))
@@ -178,6 +256,7 @@ class HUD:
         screen.blit(degats, (1000, 540))
         screen.blit(vie, (1000, 500))
         screen.blit(zombie, (15, 15))
+        screen.blit(meilleur, (15, 70))
 
         self.achat(self.attack1, screen, self.shopinterface, self.attack1_title, self.attack1_desc, self.attack1_desc1, self.attack1_desc2, self.attack1_desc3)
         self.achat(self.attack2, screen, self.shopinterface, self.attack2_title, self.attack2_desc, self.attack2_desc1, self.attack2_desc2, self.attack2_desc3)
@@ -193,6 +272,10 @@ class HUD:
         self.achat(self.buche2, screen, self.shopinterface, self.buche2_title, self.buche2_desc, self.buche2_desc1, self.buche2_desc2, self.buche2_desc3)
         self.achat(self.pierre1, screen, self.shopinterface, self.pierre1_title, self.pierre1_desc, self.pierre1_desc1, self.pierre1_desc2, self.pierre1_desc3)
         self.achat(self.pierre2, screen, self.shopinterface, self.pierre2_title, self.pierre2_desc, self.pierre2_desc1, self.pierre2_desc2, self.pierre2_desc3)
+
+
+        self.popup_quest(self.questbase_cond, screen, self.popup_img, self.questbase_title, self.popup_questbase_desc)
+        self.popup_quest(self.quest2_cond, screen, self.popup_img, self.quest2_title, self.popup_quest2_desc)
 
     def panneau(self, screen):
         screen.blit(self.panneauimg, (0, 0))

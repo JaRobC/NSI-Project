@@ -9,7 +9,11 @@ class Main:
 
     def __init__(self):
         pygame.init()
-        pygame.display.set_caption('Island of Kingdoms Main Menu')      #
+
+        self.logo = pygame.image.load('logo.png')
+        pygame.display.set_icon(self.logo)
+
+        pygame.display.set_caption('Island of Kingdoms - Main Menu')      #
         self.screen = pygame.display.set_mode((1280, 720),0,32)    
         font = pygame.font.SysFont('Comic Sans MS', 50)              # 
         self.font = font  
@@ -22,7 +26,9 @@ class Main:
         self.click = False                                                   #
         self.flag = False    
         self.isPlay = False                                                #
-        self.lvl_sound = 0.2                                    #
+        self.lvl_sound = 0.2  
+        
+                                          #
 
     def play(self):
         pygame.mixer.music.load("./menu/sound/sound1.mp3")          #
