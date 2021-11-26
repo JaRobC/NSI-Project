@@ -158,6 +158,54 @@ class HUD:
         self.popup_quest2_desc = "Vous avez reçu 10 d'argent"
         self.quest2_cond = False
         self.quest2_stop = 0
+        ####
+        self.quest3_title = "Pickaxe"
+        self.quest3_desc = "Afin de finir cette quête, vous"
+        self.quest3_desc1 = "devrez prendre 10 pierres et 10 bois"
+        self.quest3_desc2 = "afin de recevoir"
+        self.quest3_desc3 = "1 pioche"
+        self.quest3 = False
+        self.quest3_isDo = False
+
+        self.popup_quest3_desc = "Vous avez reçu 1 pioche"
+        self.quest3_cond = False
+        self.quest3_stop = 0
+        ####
+        self.quest4_title = "Hache"
+        self.quest4_desc = "Afin de finir cette quête, vous"
+        self.quest4_desc1 = "devrez abattre 5 arbres et prendre de la pierre"
+        self.quest4_desc2 = "tronc afin de recevoir"
+        self.quest4_desc3 = "1 hache"
+        self.quest4 = False
+        self.quest4_isDo = False
+
+        self.popup_quest4_desc = "Vous avez reçu 1 hache"
+        self.quest4_cond = False
+        self.quest4_stop = 0
+        ####
+        self.quest5_title = "The..The..Legende"
+        self.quest5_desc = "Les fausse langues disent"
+        self.quest5_desc1 = "que à la forêt du Sud-Ouest"
+        self.quest5_desc2 = "Un orgre attand à être défier"
+        self.quest5_desc3 = "qui sait, le roi va enfin revenir !"
+        self.quest5 = False
+        self.quest5_isDo = False
+
+        self.popup_quest5_desc = "Long live the king !"
+        self.quest5_cond = False
+        self.quest5_stop = 0
+        ####
+        self.quest6_title = "Boss?"
+        self.quest6_desc = "???"
+        self.quest6_desc1 = "?+%¨M%¨M¨M%*"
+        self.quest6_desc2 = "..."
+        self.quest6_desc3 = "....."
+        self.quest6 = False
+        self.quest6_isDo = False
+
+        self.popup_quest6_desc = "The End ?"
+        self.quest6_cond = False
+        self.quest6_stop = 0
     ###########
         self.panneau_intro = "Bonjour voyageur,"
 
@@ -226,13 +274,14 @@ class HUD:
     
     def popup_quest(self, condition, screen, fond, titre, desc):
         if condition == True:
-            screen.blit(fond, (550, 20))
-
+            y = 20
+            screen.blit(fond, (550, y))
+            y += 5
             quest_title = self.font_warning.render(titre, False, (0, 0, 0))
-            screen.blit(quest_title, (570, 25))
-
+            screen.blit(quest_title, (570, y))
+            y += 30
             quest_desc = self.font_desc_popup.render(desc, False, (0, 0, 0))
-            screen.blit(quest_desc, (570, 55))
+            screen.blit(quest_desc, (570, y))
 
             pygame.display.flip()
 
@@ -303,6 +352,10 @@ class HUD:
 
         self.popup_quest(self.questbase_cond, screen, self.popup_img, self.questbase_title, self.popup_questbase_desc)
         self.popup_quest(self.quest2_cond, screen, self.popup_img, self.quest2_title, self.popup_quest2_desc)
+        self.popup_quest(self.quest3_cond, screen, self.popup_img, self.quest3_title, self.popup_quest3_desc)
+        self.popup_quest(self.quest4_cond, screen, self.popup_img, self.quest4_title, self.popup_quest4_desc)
+        self.popup_quest(self.quest5_cond, screen, self.popup_img, self.quest5_title, self.popup_quest5_desc)
+        self.popup_quest(self.quest6_cond, screen, self.popup_img, self.quest6_title, self.popup_quest6_desc)
 
     def panneau(self, screen):
         screen.blit(self.panneauimg, (0, 0))

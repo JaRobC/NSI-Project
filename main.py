@@ -69,7 +69,7 @@ class Main:
             self.screen.fill((202, 228, 241))                                            
             self.screen.blit(self.background1, (0, 0))                                        
             self.draw_text('Island of Kingdoms', self.font, (255,215,0), self.screen, 420, 40)      
-            self.draw_text('V1.2 (Solo)', self.font2, (255, 255, 255), self.screen, 1120, 660)        
+            self.draw_text('V1.3.1 (Solo)', self.font2, (255, 255, 255), self.screen, 1120, 660)        
             
             # Creation de deux variables (mx et my) qui vont avoir la valeur du curseur de la souris. [**]
             mx , my = pygame.mouse.get_pos()  

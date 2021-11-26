@@ -13,7 +13,6 @@ mainClock = pygame.time.Clock()
                             #
 from perso import Player    #
 from main import Main
-
 class Game: #On crée la classe pour le jeu
 
     def __init__(self): #On définit la fonction qui s'éxécutera au lancement du jeu
@@ -88,6 +87,8 @@ class Game: #On crée la classe pour le jeu
     #################################################################################################
 
         self.choice = False
+        self.pioche = False
+        self.hache = False
         self.choice2 = False
         self.money = 0
         self.pv = 100
@@ -97,6 +98,10 @@ class Game: #On crée la classe pour le jeu
 
         self.isQuest1 = False
         self.isQuest2 = False
+        self.isQuest3 = False
+        self.isQuest4 = False
+        self.isQuest5 = False
+        self.isQuest6 = False
 
         self.isAchat = False
         self.save_data = shelve.open("data")
@@ -193,7 +198,7 @@ class Game: #On crée la classe pour le jeu
             self.screen.fill((202, 228, 241))                                            
             self.screen.blit(self.background1, (0, 0))                                        
             self.draw_text('Island of Kingdoms', self.font, (255,215,0), self.screen, 420, 40)      
-            self.draw_text('V1.2 (Solo)', self.font2, (255, 255, 255), self.screen, 1120, 660)              
+            self.draw_text('V1.3.1 (Solo)', self.font2, (255, 255, 255), self.screen, 1120, 660)              
             
             # Creation de deux variables (mx et my) qui vont avoir la valeur du curseur de la souris. [**]
             mx , my = pygame.mouse.get_pos()  
@@ -273,10 +278,23 @@ class Game: #On crée la classe pour le jeu
             self.screen.blit(self.background1, (0, 0))                                         
             self.hud.questbase = True
             self.hud.quest2 = True
+            self.hud.quest3 = True
+            self.hud.quest4 = True
+            self.hud.quest5 = True
+            self.hud.quest6 = True
             if self.hud.page == 1:
                 self.hud.quest(self.hud.questbase, self.screen, self.hud.questimg, self.hud.questbase_title, self.hud.questbase_desc, self.hud.questbase_desc1, self.hud.questbase_desc2, self.hud.questbase_desc3, self.hud.questbase_isDo)      
             elif self.hud.page == 2:
                 self.hud.quest(self.hud.quest2, self.screen, self.hud.questimg, self.hud.quest2_title, self.hud.quest2_desc, self.hud.quest2_desc1, self.hud.quest2_desc2, self.hud.quest2_desc3, self.hud.quest2_isDo)
+            elif self.hud.page == 3:
+                self.hud.quest(self.hud.quest3, self.screen, self.hud.questimg, self.hud.quest3_title, self.hud.quest3_desc, self.hud.quest3_desc1, self.hud.quest3_desc2, self.hud.quest3_desc3, self.hud.quest3_isDo)
+            elif self.hud.page == 4:
+                self.hud.quest(self.hud.quest4, self.screen, self.hud.questimg, self.hud.quest4_title, self.hud.quest4_desc, self.hud.quest4_desc1, self.hud.quest4_desc2, self.hud.quest4_desc3, self.hud.quest4_isDo)
+            elif self.hud.page == 5:
+                self.hud.quest(self.hud.quest5, self.screen, self.hud.questimg, self.hud.quest5_title, self.hud.quest5_desc, self.hud.quest5_desc1, self.hud.quest5_desc2, self.hud.quest5_desc3, self.hud.quest5_isDo)
+            elif self.hud.page == 6:
+                self.hud.quest(self.hud.quest6, self.screen, self.hud.questimg, self.hud.quest6_title, self.hud.quest6_desc, self.hud.quest6_desc1, self.hud.quest6_desc2, self.hud.quest6_desc3, self.hud.quest6_isDo)
+            
             # Creation de deux variables (mx et my) qui vont avoir la valeur du curseur de la souris. [**]
             mx , my = pygame.mouse.get_pos()  
 
@@ -292,14 +310,14 @@ class Game: #On crée la classe pour le jeu
                     running = False
             if button_suiv.collidepoint((mx, my)):
                 if click:
-                    if self.hud.page == 2:
+                    if self.hud.page == 6:
                         self.hud.page = 1
                     else:
                         self.hud.page += 1
             if button_prec.collidepoint((mx, my)):
                 if click:
                     if self.hud.page == 1:
-                        self.hud.page = 2
+                        self.hud.page = 6
                     else:
                         self.hud.page -= 1
 
@@ -659,6 +677,22 @@ class Game: #On crée la classe pour le jeu
             self.money += 10
             self.hud.quest2_cond = True
             self.isQuest2 = True
+        if self.hud.quest3_isDo == True and self.isQuest3 == False:
+            self.pioche = True
+            self.hud.quest3_cond = True
+            self.isQuest3 = True
+        if self.hud.quest4_isDo == True and self.isQuest4 == False:
+            self.hache = True
+            self.hud.quest4_cond = True
+            self.isQuest4 = True
+        if self.hud.quest5_isDo == True and self.isQuest5 == False:
+            self.money += 10
+            self.hud.quest5_cond = True
+            self.isQuest5 = True
+        if self.hud.quest6_isDo == True and self.isQuest6 == False:
+            self.money += 10
+            self.hud.quest6_cond = True
+            self.isQuest6 = True
 
 
     def isDead(self):
@@ -737,9 +771,13 @@ class Game: #On crée la classe pour le jeu
                         self.nom_bois += 3
                     elif self.attack >= 51:
                         self.nom_bois += 5
-                    self.pv = self.pv - 1
-                    self.bois_coupe += 1
-                    self.suite_bois += 1
+                    if self.hache == True:
+                        self.bois_coupe += 1
+                        self.suite_bois += 1
+                    else: 
+                        self.pv = self.pv - 1
+                        self.bois_coupe += 1
+                        self.suite_bois += 1
                     print("bois = ",self.nom_bois)
                     self.render_hud()
                 if self.suite_bois >= 20: #On lance le "timer" pour éviter que la récolte soit infini
@@ -761,7 +799,11 @@ class Game: #On crée la classe pour le jeu
                     elif self.attack >= 51:
                         self.nom_pierre += 5
                     self.pierre_casse += 1
-                    self.pv = self.pv - 2
+                    if self.pioche == True:
+                        self.pierre_casse += 1
+                    else:
+                        self.pierre_casse += 1
+                        self.pv = self.pv - 2
                     self.suite_pierre += 1
                     print("pierre = ",self.nom_pierre)
                     self.render_hud()
@@ -1041,7 +1083,22 @@ class Game: #On crée la classe pour le jeu
             main.main_menu()
 
         if self.bois_coupe >= 5:
-                self.hud.quest2_isDo = True
+            self.hud.quest2_isDo = True
+
+    
+        if self.hud.quest3_isDo == False:
+            if self.bois_coupe > 10: 
+                self.nom_pierre += -10
+                self.nom_bois += -10
+                self.hud.quest3_isDo = True
+
+        if self.hud.quest4_isDo == False:
+            if self.pierre_casse > 10:    
+                self.hud.quest4_isDo = True
+                self.nom_pierre += -10
+                self.nom_bois += -10
+
+                
         self.isQuestValid()
 
 ###########################################################
@@ -1116,19 +1173,50 @@ class Game: #On crée la classe pour le jeu
                     self.suite_pierre = 0
                     self.stop_pierre = False
 
+
+            ###
             if self.hud.questbase_cond == True: #On effectue le timer du popup
                 self.hud.questbase_stop += 1
                 if self.hud.questbase_stop >= 200:
                     self.hud.questbase_stop = 0
                     print("ok")
                     self.hud.questbase_cond = False
-
+            ##
             if self.hud.quest2_cond == True: #On effectue le timer du popup
                 self.hud.quest2_stop += 1
                 if self.hud.quest2_stop >= 200:
                     self.hud.quest2_stop = 0
                     print("ok")
                     self.hud.quest2_cond = False
+            ##
+            if self.hud.quest3_cond == True: #On effectue le timer du popup
+                self.hud.quest3_stop += 1
+                if self.hud.quest3_stop >= 200:
+                    self.hud.quest3_stop = 0
+                    print("ok")
+                    self.hud.quest3_cond = False
+            ##
+            if self.hud.quest4_cond == True: #On effectue le timer du popup
+                self.hud.quest4_stop += 1
+                if self.hud.quest4_stop >= 200:
+                    self.hud.quest4_stop = 0
+                    print("ok")
+                    self.hud.quest4_cond = False
+            ##
+            if self.hud.quest5_cond == True: #On effectue le timer du popup
+                self.hud.quest5_stop += 1
+                if self.hud.quest5_stop >= 200:
+                    self.hud.quest5_stop = 0
+                    print("ok")
+                    self.hud.quest5_cond = False
+            ##
+            if self.hud.quest6_cond == True: #On effectue le timer du popup
+                self.hud.quest6_stop += 1
+                if self.hud.quest6_stop >= 200:
+                    self.hud.quest6_stop = 0
+                    print("ok")
+                    self.hud.quest6_cond = False
+            
             
             if self.nom_mechant > self.nom_meilleur:
                 self.save_data['nombre zombie'] = self.nom_mechant
