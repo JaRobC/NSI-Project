@@ -9,7 +9,7 @@ class Mechant(pygame.sprite.Sprite):
         super().__init__()
 
         #On charge le perso
-        self.sprite_sheet = pygame.image.load('mechant.png')
+        self.sprite_sheet = pygame.image.load('./img/mechant.png')
         self.image = self.get_img(0, 0)
         self.image.set_colorkey([255, 255, 255])
         self.rect = self.image.get_rect()

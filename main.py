@@ -10,7 +10,7 @@ class Main:
     def __init__(self):
         pygame.init()
 
-        self.logo = pygame.image.load('logo.png')
+        self.logo = pygame.image.load('./img/logo.png')
         pygame.display.set_icon(self.logo)
 
         pygame.display.set_caption('Island of Kingdoms - Main Menu')      #

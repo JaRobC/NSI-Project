@@ -25,11 +25,11 @@ class Game: #On crée la classe pour le jeu
         #On crée la fenètre
         self.screen = pygame.display.set_mode((1280, 720))
         pygame.display.set_caption("Island of Kingdoms - In Game")
-        self.logo = pygame.image.load('logo.png')
+        self.logo = pygame.image.load('./img/logo.png')
         pygame.display.set_icon(self.logo)
 
         #On charge la carte 
-        self.tmx_data = pytmx.util_pygame.load_pygame('carte.tmx')
+        self.tmx_data = pytmx.util_pygame.load_pygame('./tmx/carte.tmx')
         map_data = pyscroll.data.TiledMapData(self.tmx_data)
         map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
         map_layer.zoom = 3
@@ -62,8 +62,8 @@ class Game: #On crée la classe pour le jeu
         self.font_button2 = pygame.font.SysFont('Comic Sans MS', 70)          #
         self.background1 = pygame.image.load("./menu/background/bg1.jpg")    # de l'initialisation de base de Pygame.
         self.background2 = pygame.image.load("./menu/background/bg2.png")    #
-        self.bouton_suivant = pygame.image.load("bouton suivant.png")
-        self.bouton_precedent = pygame.image.load("bouton precedent.png")
+        self.bouton_suivant = pygame.image.load("./img/bouton suivant.png")
+        self.bouton_precedent = pygame.image.load("./img/bouton precedent.png")
         self.click = False                                                   #
         self.flag = False 
         self.lvl_sound = 0.5
@@ -112,7 +112,7 @@ class Game: #On crée la classe pour le jeu
         self.isAlreadyPopup = False
 
         self.isAchat = False
-        self.save_data = shelve.open("data")
+        self.save_data = shelve.open("./data/data")
         try:
             self.nom_meilleur = self.save_data['nombre zombie']
         except KeyError:
@@ -453,7 +453,7 @@ class Game: #On crée la classe pour le jeu
         self.world = 'shop'
 
         #On charge la carte 
-        self.tmx_data = pytmx.util_pygame.load_pygame('shop house.tmx')
+        self.tmx_data = pytmx.util_pygame.load_pygame('./tmx/shop house.tmx')
         map_data = pyscroll.data.TiledMapData(self.tmx_data)
         map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
         map_layer.zoom = 3
@@ -507,7 +507,7 @@ class Game: #On crée la classe pour le jeu
         self.isAchat = False
         
         #On charge la carte 
-        self.tmx_data = pytmx.util_pygame.load_pygame('chateau.tmx')
+        self.tmx_data = pytmx.util_pygame.load_pygame('./tmx/chateau.tmx')
         map_data = pyscroll.data.TiledMapData(self.tmx_data)
         map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
         map_layer.zoom = 3
@@ -557,7 +557,7 @@ class Game: #On crée la classe pour le jeu
         self.player.save_location()
 
         #On charge la carte 
-        self.tmx_data = pytmx.util_pygame.load_pygame('carte.tmx')
+        self.tmx_data = pytmx.util_pygame.load_pygame('./tmx/carte.tmx')
         map_data = pyscroll.data.TiledMapData(self.tmx_data)
         map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
         map_layer.zoom = 3
@@ -624,7 +624,7 @@ class Game: #On crée la classe pour le jeu
         self.world = 'boss1'
         
         #On charge la carte 
-        self.tmx_data = pytmx.util_pygame.load_pygame('boss.tmx')
+        self.tmx_data = pytmx.util_pygame.load_pygame('./tmx/boss.tmx')
         map_data = pyscroll.data.TiledMapData(self.tmx_data)
         map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
         map_layer.zoom = 3

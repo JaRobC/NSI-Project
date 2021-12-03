@@ -4,25 +4,25 @@ import pygame
 class HUD:
 
     def __init__(self):
-        self.shopinterface = pygame.image.load('shop interface.png')
-        self.panneauimg = pygame.image.load("fond panneau.png").convert()
+        self.shopinterface = pygame.image.load('./img/shop interface.png')
+        self.panneauimg = pygame.image.load("./img/fond panneau.png").convert()
         self.panneauimg.set_alpha(158)
-        self.questimg = pygame.image.load("quest.png")
-        self.croix = pygame.image.load("croix rouge.png")
-        self.fleche = pygame.image.load("fleche verte.png")
-        self.popup_img = pygame.image.load("popup quest.png")
+        self.questimg = pygame.image.load("./img/quest.png")
+        self.croix = pygame.image.load("./img/croix rouge.png")
+        self.fleche = pygame.image.load("./img/fleche verte.png")
+        self.popup_img = pygame.image.load("./img/popup quest.png")
 
-        self.heart1 = pygame.image.load("hearth1.png")
-        self.heart2 = pygame.image.load("hearth2.png")
-        self.heart3 = pygame.image.load("hearth3.png")
-        self.heart4 = pygame.image.load("hearth4.png")
-        self.heart5 = pygame.image.load("hearth5.png")
+        self.heart1 = pygame.image.load("./img/hearth1.png")
+        self.heart2 = pygame.image.load("./img/hearth2.png")
+        self.heart3 = pygame.image.load("./img/hearth3.png")
+        self.heart4 = pygame.image.load("./img/hearth4.png")
+        self.heart5 = pygame.image.load("./img/hearth5.png")
         self.vie = 0
 
-        self.coin = pygame.image.load("coin.png")
-        self.rock = pygame.image.load("rock.png")
-        self.tree = pygame.image.load("tree.png")
-        self.faitmal = pygame.image.load("degat.png")
+        self.coin = pygame.image.load("./img/coin.png")
+        self.rock = pygame.image.load("./img/rock.png")
+        self.tree = pygame.image.load("./img/tree.png")
+        self.faitmal = pygame.image.load("./img/degat.png")
 
         self.isPierre = False
         self.isBois = False

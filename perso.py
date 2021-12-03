@@ -9,7 +9,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
 
         #On charge le perso
-        self.sprite_sheet = pygame.image.load('perso.png')
+        self.sprite_sheet = pygame.image.load('./img/perso.png')
         self.image = self.get_img(34, 0)
         self.image.set_colorkey([255, 255, 255])
         self.rect = self.image.get_rect()
